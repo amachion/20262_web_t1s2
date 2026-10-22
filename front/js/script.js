@@ -16,3 +16,7 @@ async function obterFilmes () {
         celulaSinopse.innerHTML = filme.sinopse
     }
 }
+
+function cadastrarFilme() {
+    console.log("cadastrando...")
+}
