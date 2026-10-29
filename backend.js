@@ -1,7 +1,7 @@
 const express = require("express")
 const cors = require("cors")
 const mongoose = require("mongoose")
-const uniqueValidator = require("mongoose-unique-validator")
+const uniqueValidator = require("mongoose-unique-validator").default
 const app = express()
 app.use(express.json())
 app.use(cors())
@@ -11,12 +11,12 @@ const Filme = mongoose.model ("Filme", mongoose.Schema({
     sinopse: {type: String}
 }))
 
-const usuarioSchema = mongooseSchema ({
+const usuarioSchema = mongoose.Schema ({
     login: {type: String, required: true, unique: true},
     password: {type: String, required: true}
 })
 usuarioSchema.plugin(uniqueValidator)
-const usuario = mongoose.model("Usuario", usuarioSchema)
+const Usuario = mongoose.model("Usuario", usuarioSchema)
 
 async function conectarMongo () {
     await mongoose.connect(`mongodb+srv://andreiamachion_db_user:mongo123@cluster0.d7majmq.mongodb.net/`)
