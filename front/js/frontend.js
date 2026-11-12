@@ -24,7 +24,6 @@ async function cadastrarFilme() {
     let sinopseInput = document.querySelector('#sinopseInput')
     let titulo = tituloInput.value
     let sinopse = sinopseInput.value
-
     if (sinopse && titulo) {
         tituloInput.value = ""
         sinopseInput.value = ""
@@ -41,13 +40,7 @@ async function cadastrarFilme() {
         }
     }
     else {
-        let alert = document.querySelector('.alert-cadastro-filme')
-        alert.classList.add('show')
-        alert.classList.remove('d-none')
-        setTimeout(() => {
-            alert.classList.add('d-none')
-            alert.classList.remove('show')
-        }, 2000)
+        exibeAlerta ('.alert-cadastro-filme', "Preencha todos os campos", ['show', 'alert-danger'], ['d-none', 'alert-success'], 2000)
     }
 }
 async function cadastrarUsuario () {
@@ -56,16 +49,37 @@ async function cadastrarUsuario () {
     let usuarioCadastro = usuarioCadastroInput.value
     let passwordCadastro = passwordCadastroInput.value
     if (usuarioCadastro && passwordCadastro) {
-        //conecta back
+        try {
+            const cadastroEndpoint = '/signup'
+            const URLCompleta = `${protocolo}${baseURL}${cadastroEndpoint}`
+            usuarioCadastroInput.value = ""
+            passwordCadastroInput.value = ""
+            await axios.post (URLCompleta, {login: usuarioCadastro, password: passwordCadastro})
+            exibeAlerta ('.alert-modal-cadastro', "Usuário cadastrado com sucesso", ['show', 'alert-success'], ['d-none', 'alert-danger'], 2000)
+            escondeModal('#modalCadastro', 2000)
+        }
+        catch (e) {
+            exibeAlerta ('.alert-modal-cadastro', "Falha no cadastro do usuário", ['show', 'alert-danger'], ['d-none', 'alert-success'], 2000)
+            escondeModal('#modalCadastro', 2000)
+        }
     }
     else {
-        let alert = document.querySelector('.alert-modal-cadastro')
-        alert.innerHTML = "Preencha todos os campos"
-        alert.classList.add('show', 'alert-danger')
-        alert.classList.remove('d-none')
-        setTimeout(() => {
-            alert.classList.add('d-none')
-            alert.classList.remove('show')
-        }, 2000)
+        exibeAlerta ('.alert-modal-cadastro', "Preencha todos os campos", ['show', 'alert-danger'], ['d-none', 'alert-success'], 2000)
     }
+}
+function exibeAlerta (seletor, innerHTML, classesToAdd, classesToRemove, timeout) {
+    let alert = document.querySelector(seletor)
+    alert.innerHTML = innerHTML
+    alert.classList.add(...classesToAdd)
+    alert.classList.remove(...classesToRemove)
+    setTimeout(() => {
+        alert.classList.add('d-none')
+        alert.classList.remove('show')
+    }, timeout)
+}
+function escondeModal (seletor, timeout) {
+    setTimeout (() => {
+        let modal = bootstrap.Modal.getInstance(document.querySelector(seletor))
+        modal.hide()
+    }, timeout)
 }
